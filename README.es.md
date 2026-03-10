@@ -168,6 +168,69 @@ Qué esperar:
 
 ---
 
+## Enlaces de videos demo (evidencia de competencia)
+
+Agrega aquí tus videos oficiales antes de la entrega:
+
+- Video Open Challenge: `[Agregar enlace de YouTube]`
+- Video Obstacle Challenge: `[Agregar enlace de YouTube]`
+- Video de estacionamiento/maniobra final (opcional): `[Agregar enlace]`
+
+Recomendaciones para grabación:
+
+- Mostrar robot y pista completos en un mismo plano cuando sea posible.
+- Mantener una toma continua (sin cortes) por cada desafío.
+- Indicar versión de software y fecha en la descripción del video.
+- Guardar respaldos locales y en la nube.
+
+---
+
+## ¿Necesitamos entrenar modelos de IA?
+
+Respuesta corta: **No, no es obligatorio entrenar una red neuronal**.
+
+Este proyecto usa visión por computador clásica (segmentación por color HSV),
+que es una estrategia válida y práctica para WRO Future Engineers. Para la
+mayoría de equipos, este enfoque es más rápido de desarrollar y más fácil de
+depurar que una solución de deep learning.
+
+Cuándo considerar entrenamiento de IA:
+
+- La iluminación es muy inestable y las máscaras de color fallan.
+- Necesitas reconocer objetos más allá de pilares de color.
+- El equipo tiene tiempo para recolectar datos y validar modelos.
+
+Si mantienes buena calibración HSV + lógica sólida de control (FSM/PID), puedes
+construir una solución competitiva sin entrenamiento de IA.
+
+---
+
+## Checklist del repositorio WRO antes de enviar
+
+Usa esta lista final antes de compartir el enlace del repositorio:
+
+- [ ] README completo y claro (arquitectura + instalación + ejecución + soporte).
+- [ ] Código de Arduino y Raspberry Pi incluido.
+- [ ] Archivos de cableado y CAD cargados (`wiring/`, `cad/`).
+- [ ] Notas/diario de ingeniería cargados en `docs/`.
+- [ ] Enlaces a videos demo agregados en este README.
+- [ ] Repositorio público y accesible sin problemas de permisos.
+- [ ] Historial de commits con progreso real (no un solo commit final gigante).
+
+Hitos sugeridos de progreso (buena práctica):
+
+1. Primer hito: movimiento básico + cámara en vivo.
+2. Hito intermedio: evasión de obstáculos + mejora de control.
+3. Hito final: ejecución estable + documentación + videos.
+
+Usa mensajes de commit claros, por ejemplo:
+
+- `feat: add serial protocol for steering and throttle`
+- `fix: adjust HSV ranges for indoor light`
+- `docs: add challenge test videos and wiring notes`
+
+---
+
 ## Solución rápida de problemas (fallas comunes)
 
 ### 1) `Could not connect to Arduino`

@@ -168,6 +168,68 @@ What to expect:
 
 ---
 
+## Demo video links (competition evidence)
+
+Add your official test videos here before submission:
+
+- Open Challenge video: `[Add YouTube link here]`
+- Obstacle Challenge video: `[Add YouTube link here]`
+- Parking / final maneuver video (optional): `[Add link here]`
+
+Recommended recording tips:
+
+- Show the full robot and field in one frame when possible.
+- Keep one unedited full-run video for each challenge.
+- Mention software version/date in the video description.
+- Keep backup files locally and in cloud storage.
+
+---
+
+## Do we need AI model training?
+
+Short answer: **No, training a neural network is not mandatory**.
+
+This project uses classic computer vision (HSV color segmentation), which is a
+valid and practical approach for WRO Future Engineers. For most teams, this is
+faster to develop and easier to debug than deep-learning pipelines.
+
+When to consider AI training anyway:
+
+- Lighting is extremely unstable and color masks become unreliable.
+- You need object recognition beyond simple colored pillars.
+- Your team has enough time for data collection + model testing.
+
+If you stay with HSV + good calibration + strong control logic (FSM/PID), you
+can still build a competitive solution.
+
+---
+
+## WRO repository checklist before submission
+
+Use this as a final checklist before sending the repository link:
+
+- [ ] README is complete and clear (architecture + setup + run + troubleshooting).
+- [ ] Arduino and Raspberry Pi code are both included.
+- [ ] Wiring and CAD files are uploaded (`wiring/`, `cad/`).
+- [ ] Engineering notes/journal are uploaded in `docs/`.
+- [ ] Demo video links are added in this README.
+- [ ] Repository is public and accessible without login issues.
+- [ ] Commit history shows real progress (not one giant final commit only).
+
+Suggested progress milestones (good practice):
+
+1. First implementation milestone (basic motion + camera stream).
+2. Mid milestone (obstacle handling and improved control).
+3. Final milestone (stable run + documentation + videos).
+
+Keep commit messages meaningful, for example:
+
+- `feat: add serial protocol for steering and throttle`
+- `fix: adjust HSV ranges for indoor light`
+- `docs: add challenge test videos and wiring notes`
+
+---
+
 ## Quick troubleshooting (common student issues)
 
 ### 1) `Could not connect to Arduino`
