@@ -119,6 +119,12 @@ Run this on Raspberry Pi:
 python3 src/examples/rpi_arduino_serial_test.py --port /dev/ttyACM0
 ```
 
+Optional stress test example (3 cycles, slower pacing):
+
+```bash
+python3 src/examples/rpi_arduino_serial_test.py --port /dev/ttyACM0 --repeats 3 --delay 1.0
+```
+
 Windows example:
 
 ```bash
