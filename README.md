@@ -1,99 +1,229 @@
-# wro2026-fe-vehicle
+# WRO 2026 Future Engineers Vehicle (Beginner Friendly Guide)
 
-Starter repository for the WRO 2026 Future Engineers vehicle. It bundles the
-vision prototype (Raspberry Pi), the Arduino firmware stub for the drivetrain,
-and folders for CAD, wiring, and documentation assets.
+**Language:** English | [Español](README.es.md)
 
-## Repository layout
+Welcome! 👋  
+This repository is designed for students (including mechanical engineering teams)
+who may have **little programming experience**.
 
-```text
-wro2026-fe-vehicle/
-├── README.md
-├── requirements.txt         # Python dependencies for the Pi
-├── src/
-│   ├── main.py              # Core vision & decision loop
-│   ├── arduino/
-│   │   └── motor_control.ino# Arduino sketch for steering/throttle
-│   ├── examples/
-│   │   └── rpi_arduino_serial_test.py # Serial handshake test
-│   └── utils/
-│       └── calibration.py   # HSV calibration helpers
-├── cad/                     # 3D files (STEP, STL)
-├── wiring/                  # Wiring diagrams & pinouts
-└── docs/                    # Engineering journal & reports
+If you can follow a checklist, you can run this project.
+
+---
+
+## What this project does (in simple words)
+
+- Uses a **Raspberry Pi camera** to detect colors (red, green, magenta).
+- Sends commands to an **Arduino Uno** over USB serial.
+- Arduino controls:
+  - steering servo (`S...` commands)
+  - throttle/ESC (`T...` commands)
+
+---
+
+## Visual roadmap (from clone to run)
+
+### 1) Full workflow
+
+![Quick start workflow](docs/diagrams/01_quick_start_workflow.png)
+
+### 2) Connection overview
+
+![Connection overview](docs/diagrams/02_connection_overview.png)
+
+---
+
+## Before you start (hardware + software checklist)
+
+### Hardware
+
+- Raspberry Pi (with Raspberry Pi OS)
+- Arduino Uno
+- USB cable (Pi ↔ Arduino)
+- Camera module or USB camera
+- Steering servo
+- ESC + motor
+- Battery / power source
+
+### Software
+
+- Git installed
+- Python 3 installed
+- Arduino IDE installed
+
+---
+
+## Step-by-step instructions
+
+## Step 1 — Clone this repository
+
+On Raspberry Pi terminal:
+
+```bash
+git clone https://github.com/sjhallo07/wro2026-fe-vehicle.git
+cd wro2026-fe-vehicle
 ```
 
-Add your CAD, wiring, and documentation artifacts in their respective folders
-as they become available.
+---
 
-## Raspberry Pi setup
+## Step 2 — Install Python dependencies
 
-1. Flash Raspberry Pi OS (Bullseye recommended) and boot the Pi.
-2. Install packages:
+### Raspberry Pi / Linux
 
-   ```bash
-   sudo apt update
-   sudo apt install python3-opencv python3-pip
-   pip3 install -r requirements.txt
-   ```
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-3. Enable the serial interface (``raspi-config → Interface Options → Serial``).
-4. Connect the camera module and verify it works (``libcamera-still`` test).
+### Windows (optional bench testing)
 
-## Arduino setup
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-* Open `src/arduino/motor_control.ino` with the Arduino IDE.
-* Board: Arduino Uno (or adjust pins in the sketch to match your hardware).
-* Required library: `Servo` (bundled with the IDE).
-* Upload and monitor the serial console (`115200` baud). The sketch expects
-  newline-terminated commands such as `S90` (steer) or `T1500` (throttle).
+---
 
-## Quick hardware test (Raspberry Pi + Arduino)
+## Step 3 — Upload Arduino firmware
 
-After uploading `motor_control.ino`, run this from Raspberry Pi to verify the
-serial link and servo/ESC reactions:
+1. Open Arduino IDE.
+2. Open file: `src/arduino/motor_control.ino`
+3. Select board: **Arduino Uno**
+4. Select the correct port (example: `COM3` on Windows).
+5. Click **Upload**.
+
+When connected, Arduino should send `ARDUINO_READY` on serial.
+
+---
+
+## Step 4 — Connect Raspberry Pi and Arduino
+
+Minimum required connections:
+
+- Raspberry Pi to Arduino via **USB** (serial communication).
+- Camera connected to Raspberry Pi.
+- Servo signal to Arduino pin **10**.
+- ESC signal to Arduino pin **9**.
+- Use proper power and **common GND**.
+
+⚠️ Safety first: test with wheels off the ground before full driving.
+
+---
+
+## Step 5 — Test serial communication (important)
+
+Run this on Raspberry Pi:
 
 ```bash
 python3 src/examples/rpi_arduino_serial_test.py --port /dev/ttyACM0
 ```
 
-Windows equivalent (if needed while bench-testing):
+Windows example:
 
 ```bash
 python src/examples/rpi_arduino_serial_test.py --port COM3
 ```
 
-Expected serial replies include lines like `STEER:90` and `THROTTLE:1500`.
+If working, you should see responses like:
 
-## Calibrating colors
+- `STEER:90`
+- `THROTTLE:1500`
 
-Lighting changes drastically between venues, so tune HSV ranges before every
-session:
+---
+
+## Step 6 — Calibrate camera colors
+
+Run:
 
 ```bash
 python3 src/utils/calibration.py
 ```
 
-Use the OpenCV trackbars to enclose the target color. Press **s** to store the
-current bounds or **q** to exit without saving. Calibration files are saved next
-to the script and automatically loaded by `src/main.py`.
+How to use:
 
-## Running the vehicle
+- Move trackbars until mask detects your target color correctly.
+- Press **S** to save.
+- Press **Q** to quit.
+
+Do this whenever lighting changes.
+
+---
+
+## Step 7 — Run the main vehicle program
 
 ```bash
 python3 src/main.py
 ```
 
-The script will open a preview window and highlight every calibrated color. Use
-this as the foundation for your decision layer (lane keeping, obstacle
-avoidance, start button detection, etc.). It now maps vision actions to Arduino
-serial commands (`S...` for steering and `T...` for throttle).
+What to expect:
 
-## Documentation
+- Camera window opens.
+- Color detections appear.
+- Actions map to Arduino commands:
+  - `FORWARD` → `S90`, `T1600`
+  - `LEFT` → `S60`, `T1550`
+  - `RIGHT` → `S120`, `T1550`
+  - `STOP` → `T1500`, `S90`
 
-* `cad/` – CAD sources for the chassis, steering linkages, and add-ons.
-* `wiring/` – Fritzing diagrams, PDFs, and pinout spreadsheets.
-* `docs/` – Engineering journal (PDF) plus any supporting appendices.
+---
 
-Keep these folders synchronized with your latest design iterations so judges can
-reconstruct the entire build from this repository.
+## Quick troubleshooting (common student issues)
+
+### 1) `Could not connect to Arduino`
+
+- Check USB cable.
+- Check port (`/dev/ttyACM0` or `COMx`).
+- Close Arduino Serial Monitor (it can lock the port).
+
+### 2) Camera not detected
+
+- Verify camera cable.
+- Try another camera index in code if needed.
+
+### 3) Wrong color detection
+
+- Re-run calibration (`src/utils/calibration.py`).
+- Improve lighting consistency.
+
+### 4) Servo/motor does not move
+
+- Check power wiring.
+- Confirm Arduino pins match sketch (`10` and `9`).
+- Confirm ESC/servo grounds are common with Arduino.
+
+### 5) Python package import errors (`cv2`, `serial`, `numpy`)
+
+- Activate `.venv` first.
+- Re-run `pip install -r requirements.txt`.
+
+---
+
+## Repository structure
+
+```text
+wro2026-fe-vehicle/
+├── README.md
+├── requirements.txt
+├── src/
+│   ├── main.py
+│   ├── arduino/
+│   │   └── motor_control.ino
+│   ├── examples/
+│   │   └── rpi_arduino_serial_test.py
+│   └── utils/
+│       └── calibration.py
+├── cad/
+├── wiring/
+└── docs/
+    └── diagrams/
+        ├── 01_quick_start_workflow.png
+        └── 02_connection_overview.png
+```
+
+---
+
+## For teachers/mentors
+
+This README is intentionally explicit and procedural so students can follow it
+without strong coding background. You can turn each step into a lab checkpoint.
