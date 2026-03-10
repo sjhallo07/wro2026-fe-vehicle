@@ -1,80 +1,79 @@
 # wro2026-fe-vehicle
-├── README.md # This file
-├── requirements.txt # Python dependencies
+
+Starter repository for the WRO 2026 Future Engineers vehicle. It bundles the
+vision prototype (Raspberry Pi), the Arduino firmware stub for the drivetrain,
+and folders for CAD, wiring, and documentation assets.
+
+## Repository layout
+
+```text
+wro2026-fe-vehicle/
+├── README.md
+├── requirements.txt         # Python dependencies for the Pi
 ├── src/
-│ ├── main.py # Main vision & decision script (Raspberry Pi)
-│ ├── arduino/
-│ │ └── motor_control.ino # Arduino firmware
-│ └── utils/
-│ ├── calibrate_color.py # Interactive color calibration
-│ └── pid_tuner.py # PID tuning helper
-├── cad/ # 3D models (STEP, STL)
-│ ├── chassis.step
-│ ├── steering_arm.stl
-│ └── ...
-├── wiring/
-│ ├── wiring_diagram.pdf # Fritzing/Excel diagram
-│ └── pinout.txt # Pin assignments
-├── docs/
-│ └── engineering_journal.pdf # Full engineering journal
-└── videos/
-├── open_challenge.mp4 # Demo of open challenge
-└── obstacle_challenge.mp4 # Demo with obstacles and parking
+│   ├── main.py              # Core vision & decision loop
+│   ├── arduino/
+│   │   └── motor_control.ino# Arduino sketch for steering/throttle
+│   └── utils/
+│       └── calibration.py   # HSV calibration helpers
+├── cad/                     # 3D files (STEP, STL)
+├── wiring/                  # Wiring diagrams & pinouts
+└── docs/                    # Engineering journal & reports
+```
 
-text
+Add your CAD, wiring, and documentation artifacts in their respective folders
+as they become available.
 
----
+## Raspberry Pi setup
 
-## Setup & Installation
+1. Flash Raspberry Pi OS (Bullseye recommended) and boot the Pi.
+2. Install packages:
 
-### Raspberry Pi Setup
-1. Flash Raspberry Pi OS (Bullseye) to an SD card.
-2. Install dependencies:
    ```bash
    sudo apt update
    sudo apt install python3-opencv python3-pip
    pip3 install -r requirements.txt
-Enable serial interface (raspi-config → Interface Options → Serial).
+   ```
 
-Connect camera and test with raspistill.
+3. Enable the serial interface (``raspi-config → Interface Options → Serial``).
+4. Connect the camera module and verify it works (``libcamera-still`` test).
 
-Arduino Setup
-Open src/arduino/motor_control.ino in Arduino IDE.
+## Arduino setup
 
-Install required libraries (Servo, etc.).
+* Open `src/arduino/motor_control.ino` with the Arduino IDE.
+* Board: Arduino Uno (or adjust pins in the sketch to match your hardware).
+* Required library: `Servo` (bundled with the IDE).
+* Upload and monitor the serial console (`115200` baud). The sketch expects
+  newline-terminated commands such as `S90` (steer) or `T1500` (throttle).
 
-Upload to Arduino Uno.
+## Calibrating colors
 
-Usage
-Calibration
-Before running, calibrate the HSV color ranges for your lighting:
+Lighting changes drastically between venues, so tune HSV ranges before every
+session:
 
-bash
-python3 src/utils/calibrate_color.py
-Use the trackbars to find the best values for red, green, and magenta. Save them in main.py.
+```bash
+python3 src/utils/calibration.py
+```
 
-Running the Vehicle
-Power up Raspberry Pi and Arduino.
+Use the OpenCV trackbars to enclose the target color. Press **s** to store the
+current bounds or **q** to exit without saving. Calibration files are saved next
+to the script and automatically loaded by `src/main.py`.
 
-SSH into Pi (or use a monitor).
+## Running the vehicle
 
-Start the main program:
-
-bash
+```bash
 python3 src/main.py
-Press the physical start button (connected to Arduino) to begin.
+```
 
-Engineering Journal
-The engineering journal (in docs/engineering_journal.pdf) documents our entire design process:
+The script will open a preview window and highlight every calibrated color. Use
+this as the foundation for your decision layer (lane keeping, obstacle
+avoidance, start button detection, etc.).
 
-Initial concepts and sketches.
+## Documentation
 
-Component selection trade‑offs.
+* `cad/` – CAD sources for the chassis, steering linkages, and add-ons.
+* `wiring/` – Fritzing diagrams, PDFs, and pinout spreadsheets.
+* `docs/` – Engineering journal (PDF) plus any supporting appendices.
 
-Iterations and test results (with photos/videos).
-
-Challenges faced and solutions.
-
-Final design justifications.
-
-It follows the WRO scoring rubric (see Appendix C of the rules).
+Keep these folders synchronized with your latest design iterations so judges can
+reconstruct the entire build from this repository.
