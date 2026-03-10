@@ -15,6 +15,14 @@ import time
 SERIAL_PORT = '/dev/ttyACM0'  # Typical port for Arduino
 BAUD_RATE = 115200
 
+# High-level action to low-level Arduino protocol mapping.
+ACTION_TO_SERIAL = {
+    "FORWARD": ("S90", "T1600"),
+    "LEFT": ("S60", "T1550"),
+    "RIGHT": ("S120", "T1550"),
+    "STOP": ("T1500", "S90"),
+}
+
 # Initialize camera (use 0 for default camera, or adjust)
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
@@ -83,13 +91,17 @@ def decide_action(red_pos, green_pos, magenta_pos):
         return "FORWARD"
 
 def send_command(cmd):
-    """Send a command string to Arduino (newline terminated)."""
+    """Send a high-level command to Arduino using S/T serial protocol."""
     if arduino:
-        arduino.write((cmd + '\n').encode())
-        print(f"Sent: {cmd}")
+        payloads = ACTION_TO_SERIAL.get(cmd, ACTION_TO_SERIAL["STOP"])
+        for payload in payloads:
+            arduino.write((payload + '\n').encode())
+            print(f"Sent: {payload} ({cmd})")
+            time.sleep(0.01)
 
 # Main loop
 try:
+    last_command = None
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -111,8 +123,10 @@ try:
         # Decide action
         command = decide_action(red_center, green_center, magenta_center)
 
-        # Send command to Arduino
-        send_command(command)
+        # Send command to Arduino only when action changes.
+        if command != last_command:
+            send_command(command)
+            last_command = command
 
         # Optional display for debugging
         if red_center:

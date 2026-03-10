@@ -14,6 +14,8 @@ wro2026-fe-vehicle/
 │   ├── main.py              # Core vision & decision loop
 │   ├── arduino/
 │   │   └── motor_control.ino# Arduino sketch for steering/throttle
+│   ├── examples/
+│   │   └── rpi_arduino_serial_test.py # Serial handshake test
 │   └── utils/
 │       └── calibration.py   # HSV calibration helpers
 ├── cad/                     # 3D files (STEP, STL)
@@ -46,6 +48,23 @@ as they become available.
 * Upload and monitor the serial console (`115200` baud). The sketch expects
   newline-terminated commands such as `S90` (steer) or `T1500` (throttle).
 
+## Quick hardware test (Raspberry Pi + Arduino)
+
+After uploading `motor_control.ino`, run this from Raspberry Pi to verify the
+serial link and servo/ESC reactions:
+
+```bash
+python3 src/examples/rpi_arduino_serial_test.py --port /dev/ttyACM0
+```
+
+Windows equivalent (if needed while bench-testing):
+
+```bash
+python src/examples/rpi_arduino_serial_test.py --port COM3
+```
+
+Expected serial replies include lines like `STEER:90` and `THROTTLE:1500`.
+
 ## Calibrating colors
 
 Lighting changes drastically between venues, so tune HSV ranges before every
@@ -67,7 +86,8 @@ python3 src/main.py
 
 The script will open a preview window and highlight every calibrated color. Use
 this as the foundation for your decision layer (lane keeping, obstacle
-avoidance, start button detection, etc.).
+avoidance, start button detection, etc.). It now maps vision actions to Arduino
+serial commands (`S...` for steering and `T...` for throttle).
 
 ## Documentation
 
