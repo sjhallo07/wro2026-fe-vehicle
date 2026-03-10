@@ -166,6 +166,30 @@ Qué esperar:
   - `RIGHT` → `S120`, `T1550`
   - `STOP` → `T1500`, `S90`
 
+### Modos útiles de ejecución (nuevo)
+
+La versión actual de `src/main.py` incluye flags adicionales para pruebas y
+despliegue:
+
+```bash
+# Verificación de lógica (sin cámara ni Arduino)
+python3 src/main.py --dry-run
+
+# Solo visión (cámara activa, serial desactivado)
+python3 src/main.py --no-serial
+
+# Puerto serial / baud / índice de cámara personalizados
+python3 src/main.py --port /dev/ttyUSB0 --baud 115200 --camera 0
+```
+
+Ejemplos equivalentes en Windows:
+
+```bash
+python src/main.py --dry-run
+python src/main.py --no-serial
+python src/main.py --port COM3 --baud 115200 --camera 0
+```
+
 ---
 
 ## Enlaces de videos demo (evidencia de competencia)

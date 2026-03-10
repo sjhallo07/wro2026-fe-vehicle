@@ -166,6 +166,29 @@ What to expect:
   - `RIGHT` → `S120`, `T1550`
   - `STOP` → `T1500`, `S90`
 
+### Useful run modes (new)
+
+The current `src/main.py` supports extra flags for testing and deployment:
+
+```bash
+# Logic-only check (no camera/Arduino required)
+python3 src/main.py --dry-run
+
+# Vision only (camera on, serial off)
+python3 src/main.py --no-serial
+
+# Custom serial port / baud / camera index
+python3 src/main.py --port /dev/ttyUSB0 --baud 115200 --camera 0
+```
+
+Windows equivalent examples:
+
+```bash
+python src/main.py --dry-run
+python src/main.py --no-serial
+python src/main.py --port COM3 --baud 115200 --camera 0
+```
+
 ---
 
 ## Demo video links (competition evidence)
